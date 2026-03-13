@@ -1,0 +1,10 @@
+{
+    "name": "rhys/ciauba-login",
+    "description": "Sistema de login con POO",
+    "autoload": {
+        "psr-4": {
+            "": "clases/"
+        }
+    },
+    "require": {}
+}
