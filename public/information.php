@@ -1,40 +1,47 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
+
+$extra_css = '
+    .partners-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-lg);
+        margin-top: var(--space-lg);
+    }
+    .partner-card {
+        background: white;
+        border-radius: var(--border-radius-lg);
+        padding: var(--space-xl);
+        text-align: center;
+        transition: all var(--transition-normal);
+        border: 1px solid #e9ecef;
+    }
+    .partner-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+    .partner-logo {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto var(--space-md);
+        border-radius: 50%;
+        overflow: hidden;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .partner-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+';
+
+$page_title = 'Información - CIAUBA';
+require_once __DIR__ . '/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIAUBA - Información</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-    <header>
-        <img src="img/logo-uba-horizontal1.png" alt="uba_logo">
-        <div class="logo">
-            <h1>Club de Ingeniería Aplicada de la Universidad Bicentenaria de Aragua</h1>
-            <p>Aprende • Construye • Mejora</p>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="information.php">Información</a></li>
-                <?php if (User::estaLogueado()): ?>
-                    <li><a href="members.php">Miembros</a></li>
-                    <li><a href="work_together.php">Foro</a></li>
-                    <li><a href="perfil.php"><i class="fas fa-user"></i> Mi Perfil</a></li>
-                    <?php if (User::esAdmin()): ?>
-                        <li><a href="admin.php">Admin</a></li>
-                    <?php endif; ?>
-                    <li><a href="logout.php">Cerrar sesión (<?php echo $_SESSION['usuario_nombre']; ?>)</a></li>
-                <?php else: ?>
-                    <li><a href="login.php">Iniciar sesión</a></li>
-                    <li><a href="register.php">Registro</a></li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-    </header>
 
     <main>
         <section class="club-info">
@@ -74,6 +81,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
             
             <article class="info-section">
                 <h3>Horario</h3>
+                <?php
+                $configModel = new Configuracion();
+                $horario = $configModel->obtener('horario');
+                if ($horario) {
+                    echo $horario;
+                } else {
+                    // mostrar horario por defecto
+                ?>
                 <table>
                     <thead>
                         <tr>
@@ -110,6 +125,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
                         </tr>
                     </tbody>
                 </table>
+                <?php } ?>
             </article>
             
             <article class="info-section">
@@ -134,8 +150,48 @@ require_once __DIR__ . '/../vendor/autoload.php';
             </article>
             
             <article class="info-section">
+                <h3><i class="fas fa-handshake"></i> Socios Comerciales</h3>
+                <p>Gracias a la colaboración con estas empresas, nuestros miembros tienen acceso a oportunidades profesionales, prácticas y formación especializada.</p>
+                
+                <div class="partners-grid">
+                    <!-- ClassVR -->
+                    <div class="partner-card">
+                        <div class="partner-logo">
+                            <img src="img/classvr.jpg" alt="ClassVR">
+                            <i class="fas fa-vr-cardboard" style="font-size: 4rem; color: var(--color-light-blue);"></i>
+                        </div>
+                        <h3>ClassVR</h3>
+                        <p>Tecnología de realidad virtual aplicada a la educación. Colaboramos en proyectos de innovación educativa y ofrecemos a nuestros miembros la posibilidad de formarse en entornos inmersivos.</p>
+                        <a href="https://www.classvr.com" target="_blank" class="partner-link">Conocer más <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+
+                    <!-- Algorithmics -->
+                    <div class="partner-card">
+                        <div class="partner-logo">
+                            <img src="img/Algorithmics.jpg" alt="Algorithmics">
+                            <i class="fas fa-laptop-code" style="font-size: 4rem; color: var(--color-light-blue);"></i>
+                        </div>
+                        <h3>Algorithmics</h3>
+                        <p>Escuela internacional de programación para niños y jóvenes. A través de este convenio, nuestros miembros pueden participar como mentores y acceder a materiales didácticos de vanguardia.</p>
+                        <a href="https://es.alg.academy/" target="_blank" class="partner-link">Conocer más <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+
+                    <!-- BusinessKids -->
+                    <div class="partner-card">
+                        <div class="partner-logo">
+                            <img src="img/businesskids.jpg" alt="BusinessKids">
+                            <i class="fas fa-child" style="font-size: 4rem; color: var(--color-light-blue);"></i>
+                        </div>
+                        <h3>BusinessKids</h3>
+                        <p>Programa de emprendimiento para niños. Nuestros miembros colaboran en el diseño de actividades lúdico-formativas y tienen oportunidades de prácticas en el área de tecnología educativa.</p>
+                        <a href="https://businesskids.com.ve/" target="_blank" class="partner-link">Conocer más <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Resto del contenido (contacto, etc.) -->
+            <article class="info-section">
                 <h3>Información de contacto</h3>
-                <p>Para más información sobre el club de inginiería aplicada, por favor contacta:</p>
                 <address>
                     <p><strong>Correo:</strong> rhysuba@gmail.com</p>
                     <p><strong>Oficina:</strong> Laboratorio de Realidad Virtual</p>
@@ -145,10 +201,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
         </section>
     </main>
 
-    <footer>
-        <p>Club de Ingeniería Aplicada UBA &copy; 2025</p>
-        <p>Universidad Bicentenaria de Aragua</p>
-        <p>Contact: rhysuba@gmail.com | Campus Edificio de Ingeniería, Salón de Realidad Virtual</p>
-    </footer>
+<?php require_once __DIR__ . '/footer.php'; ?>
 </body>
 </html>

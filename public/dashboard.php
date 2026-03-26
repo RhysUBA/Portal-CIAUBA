@@ -12,38 +12,10 @@ $estadisticas = $userModel->obtenerEstadisticas($_SESSION['usuario_id']);
 
 $nombre = $_SESSION['usuario_nombre'];
 $rol = $_SESSION['usuario_rol'];
+$page_title = 'Dashboard - CIAUBA';
+require_once __DIR__ . '/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - CIAUBA</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-    <header>
-        <img src="img/logo-uba-horizontal1.png" alt="uba_logo">
-        <div class="logo">
-            <h1>Club de Ingeniería Aplicada UBA</h1>
-            <p>Aprende • Construye • Mejora</p>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="information.php">Información</a></li>
-                <li><a href="members.php">Miembros</a></li>
-                <li><a href="work_together.php">Foro</a></li>
-                <!-- NUEVO: Enlace al perfil -->
-                <li><a href="perfil.php"><i class="fas fa-user"></i> Mi Perfil</a></li>
-                <?php if ($rol === 'admin'): ?>
-                    <li><a href="admin.php">Admin</a></li>
-                <?php endif; ?>
-                <li><a href="logout.php">Cerrar sesión (<?php echo $nombre; ?>)</a></li>
-            </ul>
-        </nav>
-    </header>
+
 
     <main>
         <section class="dashboard">
@@ -110,9 +82,6 @@ $rol = $_SESSION['usuario_rol'];
         </section>
     </main>
 
-    <footer>
-        <p>Club de Ingeniería Aplicada UBA &copy; 2025</p>
-        <p>Contacto: rhysuba@gmail.com</p>
-    </footer>
+<?php require_once __DIR__ . '/footer.php'; ?>
 </body>
 </html>

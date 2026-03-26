@@ -25,30 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+$page_title = 'Iniciar Sesión - CIAUBA';
+require_once __DIR__ . '/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - CIAUBA</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-    <header>
-        <img src="img/logo-uba-horizontal1.png" alt="uba_logo">
-        <div class="logo">
-            <h1>Club de Ingeniería Aplicada UBA</h1>
-            <p>Aprende • Construye • Mejora</p>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="information.php">Información</a></li>
-                <li><a href="register.php">Registro</a></li>
-            </ul>
-        </nav>
-    </header>
 
     <main>
         <section class="registration-form">
@@ -66,14 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="password" id="password" name="password" required>
                 </div>
                 <button type="submit">Entrar</button>
+                    <div style="text-align: right; margin-top: var(--space-xs);">
+                        <a href="recuperar_password.php" style="font-size: 0.9rem;">¿Olvidaste tu contraseña?</a>
+                    </div>
             </form>
             <p>¿No tienes cuenta? <a href="register.php">Regístrate aquí</a></p>
         </section>
     </main>
 
-    <footer>
-        <p>Club de Ingeniería Aplicada UBA &copy; 2025</p>
-        <p>Contacto: rhysuba@gmail.com</p>
-    </footer>
+<?php require_once __DIR__ . '/footer.php'; ?>
 </body>
 </html>

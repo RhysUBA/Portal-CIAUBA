@@ -127,30 +127,9 @@ if (session_status() === PHP_SESSION_NONE) {
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+$page_title = 'Registro - CIAUBA';
+require_once __DIR__ . '/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - CIAUBA</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-    <header>
-        <img src="img/logo-uba-horizontal1.png" alt="uba_logo">
-        <div class="logo">
-            <h1>Club de Ingeniería Aplicada UBA</h1>
-            <p>Aprende • Construye • Mejora</p>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="information.php">Información</a></li>
-                <li><a href="login.php">Iniciar sesión</a></li>
-            </ul>
-        </nav>
-    </header>
 
     <main>
         <section class="registration-form">
@@ -186,7 +165,7 @@ if (empty($_SESSION['csrf_token'])) {
 
                     <div class="form-group">
                         <label for="phone">Teléfono * <small>(11 dígitos, ej. 04121234567)</small></label>
-                        <input type="tel" id="phone" name="phone" 
+                        <input type="number" id="phone" name="phone" 
                                value="<?php echo htmlspecialchars($datos['telefono'] ?? ''); ?>" 
                                placeholder="04121234567" required>
                     </div>
@@ -285,9 +264,6 @@ if (empty($_SESSION['csrf_token'])) {
         </section>
     </main>
 
-    <footer>
-        <p>Club de Ingeniería Aplicada UBA &copy; 2025</p>
-        <p>Contacto: rhysuba@gmail.com</p>
-    </footer>
+<?php require_once __DIR__ . '/footer.php'; ?>
 </body>
 </html>

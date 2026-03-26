@@ -1,40 +1,31 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
+
+function tiempoTranscurrido($fecha) {
+    $ahora = new DateTime();
+    $fecha_creacion = new DateTime($fecha);
+    $diferencia = $ahora->diff($fecha_creacion);
+    if ($diferencia->d > 0) return $diferencia->d . ' día(s)';
+    if ($diferencia->h > 0) return $diferencia->h . ' hora(s)';
+    return $diferencia->i . ' minuto(s)';
+}
+
+$proyectoModel = new Proyecto();
+$temaModel = new Tema();
+
+$todos_proyectos = $proyectoModel->obtenerTodos();
+usort($todos_proyectos, function($a, $b) {
+    return strtotime($b['creado_en']) - strtotime($a['creado_en']);
+});
+$proyectos_recientes = array_slice(array_filter($todos_proyectos, function($p) {
+    return $p['estado'] !== 'cancelled';
+}), 0, 3);
+
+$temas_recientes = $temaModel->obtenerRecientes(3);
+
+$page_title = 'CIAUBA - Home';
+require_once __DIR__ . '/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIAUBA - Home</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-    <header>
-        <img src="img/logo-uba-horizontal1.png" alt="uba_logo">
-        <div class="logo">
-            <h1>Club de Ingeniería Aplicada de la Universidad Bicentenaria de Aragua</h1>
-            <p>Aprende • Construye • Mejora</p>
-        </div>
-        <nav>
-    <ul>
-        <li><a href="index.php">Inicio</a></li>
-        <li><a href="information.php">Información</a></li>
-        <?php if (User::estaLogueado()): ?>
-            <li><a href="members.php">Miembros</a></li>
-            <li><a href="work_together.php">Foro</a></li>
-            <li><a href="perfil.php"><i class="fas fa-user"></i> Mi Perfil</a></li>
-            <?php if (User::esAdmin()): ?>
-                <li><a href="admin.php">Admin</a></li>
-            <?php endif; ?>
-            <li><a href="logout.php">Cerrar sesión (<?php echo $_SESSION['usuario_nombre']; ?>)</a></li>
-        <?php else: ?>
-            <li><a href="login.php">Iniciar sesión</a></li>
-            <li><a href="register.php">Registro</a></li>
-        <?php endif; ?>
-    </ul>
-</nav>
-    </header>
 
     <main>
         <section class="hero">
@@ -48,39 +39,38 @@ require_once __DIR__ . '/../vendor/autoload.php';
         <section class="recent-projects">
             <h2>Proyectos recientes</h2>
             <div class="project-grid">
-                <article class="project-card">
-                    <h3>Mouse virtual</h3>
-                    <p>Reconocimiento de manos y expresiones como herramientas de control</p>
-                    <span class="project-status">Completado</span>
-                </article>
-                <article class="project-card">
-                    <h3>Asistente virtual</h3>
-                    <p>Sistema potenciado por IA y técnicas de machine learning</p>
-                    <span class="project-status">En progreso</span>
-                </article>
-                <article class="project-card">
-                    <h3>Página Web CIAUBA</h3>
-                    <p>Foro de información y apoyo mutuo entre estudiantes</p>
-                    <span class="project-status">Planeación</span>
-                </article>
+                <?php if (empty($proyectos_recientes)): ?>
+                    <p>No hay proyectos publicados aún. Sé el primero en <a href="admin_proyectos.php">crear un proyecto</a>.</p>
+                <?php else: ?>
+                    <?php foreach ($proyectos_recientes as $proyecto): ?>
+                        <a href="proyecto.php?id=<?php echo $proyecto['id']; ?>" class="clickable-block">
+                            <article class="project-card">
+                                <h3><?php echo htmlspecialchars($proyecto['titulo']); ?></h3>
+                                <p><?php echo htmlspecialchars(substr($proyecto['descripcion'], 0, 120)) . (strlen($proyecto['descripcion']) > 120 ? '...' : ''); ?></p>
+                                <span class="project-status"><?php echo $proyecto['estado']; ?></span>
+                                <!-- Botón eliminado, el bloque completo es clickable -->
+                            </article>
+                        </a>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </section>
 
         <section class="forum-preview">
             <h2>Últimas discusiones del foro</h2>
             <div class="discussion-list">
-                <article class="discussion">
-                    <h3><a href="#">PCB Design Best Practices</a></h3>
-                    <p>Publicado por: Alex Chen • hace 2 días • 15 comentarios</p>
-                </article>
-                <article class="discussion">
-                    <h3><a href="#">3D Printing Failures & Solutions</a></h3>
-                    <p>Publicado por: Maria Rodriguez • hace 5 días • 22 comentarios</p>
-                </article>
-                <article class="discussion">
-                    <h3><a href="#">Upcoming Hackathon Team Formation</a></h3>
-                    <p>Publicado por: Club President • hace 1 semana • 32 comentarios</p>
-                </article>
+                <?php if (empty($temas_recientes)): ?>
+                    <p>No hay temas en el foro. <a href="nuevo_tema.php">¡Crea el primero!</a></p>
+                <?php else: ?>
+                    <?php foreach ($temas_recientes as $tema): ?>
+                        <a href="tema.php?id=<?php echo $tema['id']; ?>" class="clickable-block">
+                            <article class="discussion">
+                                <h3><?php echo htmlspecialchars($tema['titulo']); ?></h3>
+                                <p>Publicado por: <?php echo htmlspecialchars($tema['nombre']); ?> • <?php echo $tema['num_respuestas']; ?> comentarios • hace <?php echo tiempoTranscurrido($tema['creado_en']); ?></p>
+                            </article>
+                        </a>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
             <?php if (User::estaLogueado()): ?>
                 <a href="work_together.php" class="view-all">Ver todas las discusiones</a>
@@ -90,9 +80,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
         </section>
     </main>
 
-    <footer>
-        <p>Club de Ingeniería Aplicada UBA &copy; 2025</p>
-        <p>Contacto: rhysuba@gmail.com | Campus Edificio de Ingeniería, Salón de Realidad Virtual</p>
-    </footer>
+<?php require_once __DIR__ . '/footer.php'; ?>
 </body>
 </html>
